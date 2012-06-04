@@ -4,6 +4,7 @@ using NHibernate.Hql.Ast;
 using NHibernate.Linq.Clauses;
 using NHibernate.Linq.GroupBy;
 using NHibernate.Linq.GroupJoin;
+using NHibernate.Linq.NestedSelects;
 using NHibernate.Linq.ResultOperators;
 using NHibernate.Linq.ReWriters;
 using NHibernate.Linq.Visitors.ResultOperatorProcessors;
@@ -19,6 +20,8 @@ namespace NHibernate.Linq.Visitors
 	{
 		public static ExpressionToHqlTranslationResults GenerateHqlQuery(QueryModel queryModel, VisitorParameters parameters, bool root)
 		{
+			NestedSelectRewriter.ReWrite(queryModel, parameters.SessionFactory);
+
 			// Remove unnecessary body operators
 			RemoveUnnecessaryBodyOperators.ReWrite(queryModel);
 
@@ -36,6 +39,9 @@ namespace NHibernate.Linq.Visitors
 
 			// Rewrite non-aggregating group-joins
 			NonAggregatingGroupJoinRewriter.ReWrite(queryModel);
+
+			// Rewrite paging
+			PagingRewriter.ReWrite(queryModel);
 
 			// Flatten pointless subqueries
 			QueryReferenceExpressionFlattener.ReWrite(queryModel);
@@ -88,6 +94,7 @@ namespace NHibernate.Linq.Visitors
 			ResultOperatorMap.Add<ContainsResultOperator, ProcessContains>();
 			ResultOperatorMap.Add<NonAggregatingGroupBy, ProcessNonAggregatingGroupBy>();
 			ResultOperatorMap.Add<ClientSideSelect, ProcessClientSideSelect>();
+			ResultOperatorMap.Add<ClientSideSelect2, ProcessClientSideSelect2>();
 			ResultOperatorMap.Add<AnyResultOperator, ProcessAny>();
 			ResultOperatorMap.Add<AllResultOperator, ProcessAll>();
 			ResultOperatorMap.Add<FetchOneRequest, ProcessFetchOne>();

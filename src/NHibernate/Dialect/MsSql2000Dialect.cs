@@ -162,6 +162,9 @@ namespace NHibernate.Dialect
 			RegisterFunction("str", new SQLFunctionTemplate(NHibernateUtil.String, "cast(?1 as nvarchar(50))"));
 
 			RegisterFunction("substring", new EmulatedLengthSubstringFunction());
+
+			RegisterFunction("bit_length", new SQLFunctionTemplate(NHibernateUtil.Int32, "datalength(?1) * 8"));
+			RegisterFunction("extract", new SQLFunctionTemplate(NHibernateUtil.Int32, "datepart(?1, ?3)"));
 		}
 
 		protected virtual void RegisterGuidTypeMapping()
@@ -408,7 +411,7 @@ namespace NHibernate.Dialect
 			throw new NotSupportedException("The query should start with 'SELECT' or 'SELECT DISTINCT'");
 		}
 
-		private bool NeedsLockHint(LockMode lockMode)
+		protected bool NeedsLockHint(LockMode lockMode)
 		{
 			return lockMode.GreaterThan(LockMode.Read);
 		}
@@ -471,15 +474,13 @@ namespace NHibernate.Dialect
 			SqlStringBuilder result = new SqlStringBuilder();
 			MatchEvaluator evaluator = new LockHintAppender(this, aliasedLockModes).ReplaceMatch;
 
-			foreach (object part in sql.Parts)
+			foreach (object part in sql)
 			{
-				if (part == Parameter.Placeholder)
-				{
-					result.Add((Parameter)part);
-					continue;
-				}
-
-				result.Add(matchRegex.Replace((string)part, evaluator));
+				var parameter = part as Parameter;
+				if (parameter != null)
+					result.Add(parameter);
+				else
+					result.Add(matchRegex.Replace((string)part, evaluator));
 			}
 
 			return result.ToSqlString();

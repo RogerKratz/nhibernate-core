@@ -5,8 +5,6 @@ using System.Data;
 using System.Linq.Expressions;
 using System.Runtime.Serialization;
 using System.Security.Permissions;
-using Iesi.Collections;
-
 using NHibernate.AdoNet;
 using NHibernate.Collection;
 using NHibernate.Criterion;
@@ -494,6 +492,14 @@ namespace NHibernate.Impl
 			}
 		}
 
+		public void Save(string entityName, object obj, object id)
+		{
+			using (new SessionIdLoggingContext(SessionId))
+			{
+				FireSave(new SaveOrUpdateEvent(entityName, obj, id, this));
+			}
+		}
+
 		/// <summary>
 		/// Save a transient object with a manually assigned ID
 		/// </summary>
@@ -544,6 +550,14 @@ namespace NHibernate.Impl
 			}
 		}
 
+		public void Update(string entityName, object obj, object id)
+		{
+			using (new SessionIdLoggingContext(SessionId))
+			{
+				FireUpdate(new SaveOrUpdateEvent(entityName, obj, id, this));
+			}
+		}
+
 		public void SaveOrUpdate(object obj)
 		{
 			using (new SessionIdLoggingContext(SessionId))
@@ -557,6 +571,14 @@ namespace NHibernate.Impl
 			using (new SessionIdLoggingContext(SessionId))
 			{
 				FireSaveOrUpdate(new SaveOrUpdateEvent(entityName, obj, this));
+			}
+		}
+
+		public void SaveOrUpdate(string entityName, object obj, object id)
+		{
+			using (new SessionIdLoggingContext(SessionId))
+			{
+				FireSaveOrUpdate(new SaveOrUpdateEvent(entityName, obj, id, this));
 			}
 		}
 
@@ -978,7 +1000,7 @@ namespace NHibernate.Impl
 		}
 
 		/// <summary> Cascade delete an entity instance</summary>
-		public void Delete(string entityName, object child, bool isCascadeDeleteEnabled, ISet transientEntities)
+		public void Delete(string entityName, object child, bool isCascadeDeleteEnabled, ISet<object> transientEntities)
 		{
 			using (new SessionIdLoggingContext(SessionId))
 			{
@@ -2482,7 +2504,7 @@ namespace NHibernate.Impl
 			}
 		}
 
-		private void FireDelete(DeleteEvent @event, ISet transientEntities)
+		private void FireDelete(DeleteEvent @event, ISet<object> transientEntities)
 		{
 			using (new SessionIdLoggingContext(SessionId))
 			{

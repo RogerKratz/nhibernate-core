@@ -145,6 +145,7 @@
     <Compile Include="Dialect\InsertGeneratedIdentifierRetrievalMethod.cs" />
     <Compile Include="Dialect\MsSql2000Dialect.cs" />
     <Compile Include="Dialect\MsSql2005DialectQueryPager.cs" />
+    <Compile Include="Dialect\MsSql2012Dialect.cs" />
     <Compile Include="Dialect\MsSql7Dialect.cs" />
     <Compile Include="Dialect\MsSqlAzure2008Dialect.cs" />
     <Compile Include="Dialect\MySQLDialect.cs" />
@@ -286,8 +287,14 @@
     <Compile Include="LazyInitializationException.cs" />
     <Compile Include="Linq\Clauses\NhHavingClause.cs" />
     <Compile Include="Linq\Clauses\NhJoinClause.cs" />
+    <Compile Include="Linq\ExpressionTransformers\RemoveCharToIntConversion.cs" />
     <Compile Include="Linq\Functions\DictionaryGenerator.cs" />
     <Compile Include="Linq\Functions\EqualsGenerator.cs" />
+    <Compile Include="Linq\GroupBy\PagingRewriter.cs" />
+    <Compile Include="Linq\NestedSelects\NestedSelectDetector.cs" />
+    <Compile Include="Linq\NestedSelects\Tuple.cs" />
+    <Compile Include="Linq\NestedSelects\SelectClauseRewriter.cs" />
+    <Compile Include="Linq\NestedSelects\ExpressionHolder.cs" />
     <Compile Include="Linq\Visitors\NhPartialEvaluatingExpressionTreeVisitor.cs" />
     <Compile Include="Linq\QuerySourceNamer.cs" />
     <Compile Include="Linq\ReWriters\AddJoinsReWriter.cs" />
@@ -299,6 +306,7 @@
     <Compile Include="Linq\Visitors\QuerySourceIdentifier.cs" />
     <Compile Include="Linq\Visitors\ResultOperatorAndOrderByJoinDetector.cs" />
     <Compile Include="Linq\Visitors\ResultOperatorProcessors\ProcessAggregateFromSeed.cs" />
+    <Compile Include="Linq\NestedSelects\NestedSelectRewriter.cs" />
     <Compile Include="Linq\Visitors\SelectJoinDetector.cs" />
     <Compile Include="Linq\Visitors\SelectClauseNominator.cs" />
     <Compile Include="Linq\Visitors\VisitorUtil.cs" />
@@ -691,6 +699,7 @@
     <Compile Include="Util\ArrayHelper.cs" />
     <Compile Include="Util\CollectionPrinter.cs" />
     <Compile Include="Util\EnumerableExtensions.cs" />
+    <Compile Include="Util\EnumeratorAdapter.cs" />
     <Compile Include="Util\IdentityMap.cs" />
     <Compile Include="Util\JoinedEnumerable.cs" />
     <Compile Include="Util\ObjectUtils.cs" />

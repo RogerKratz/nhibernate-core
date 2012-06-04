@@ -5,9 +5,7 @@ using System.Data;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;
-using Iesi.Collections;
 using Iesi.Collections.Generic;
-
 using NHibernate.AdoNet;
 using NHibernate.Cache;
 using NHibernate.Collection;
@@ -313,7 +311,7 @@ namespace NHibernate.Loader
 
 			if (optionalObject != null && !string.IsNullOrEmpty(optionalEntityName))
 			{
-				return new EntityKey(optionalId, session.GetEntityPersister(optionalEntityName, optionalObject), session.EntityMode);
+				return session.GenerateEntityKey(optionalId, session.GetEntityPersister(optionalEntityName, optionalObject));
 			}
 			else
 			{
@@ -799,7 +797,7 @@ namespace NHibernate.Loader
 				}
 			}
 
-			return resultId == null ? null : new EntityKey(resultId, persister, session.EntityMode);
+			return resultId == null ? null : session.GenerateEntityKey(resultId, persister);
 		}
 
 		/// <summary>
@@ -1476,7 +1474,7 @@ namespace NHibernate.Loader
 		{
 			IQueryCache queryCache = _factory.GetQueryCache(queryParameters.CacheRegion);
 
-			ISet filterKeys = FilterKey.CreateFilterKeys(session.EnabledFilters, session.EntityMode);
+			ISet<FilterKey> filterKeys = FilterKey.CreateFilterKeys(session.EnabledFilters, session.EntityMode);
 			QueryKey key = new QueryKey(Factory, SqlString, queryParameters, filterKeys);
 
 			IList result = GetResultFromQueryCache(session, queryParameters, querySpaces, resultTypes, queryCache, key);
