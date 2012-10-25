@@ -27,10 +27,9 @@ namespace NHibernate.Linq
 		private readonly Expression _expression;
 		private readonly IDictionary<ConstantExpression, NamedParameter> _constantToParameterMap;
 
-		public NhLinqExpression(Expression expression, ISessionFactory sessionFactory)
+		public NhLinqExpression(Expression expression, ISessionFactoryImplementor sessionFactory)
 		{
 			_expression = NhPartialEvaluatingExpressionTreeVisitor.EvaluateIndependentSubtrees(expression);
-			_expression = NameUnNamedParameters.Visit(_expression);
 
 			_constantToParameterMap = ExpressionParameterVisitor.Visit(_expression, sessionFactory);
 
